@@ -8,10 +8,10 @@ def preprocess_data(input_path="data/raw_pbp.csv", output_path="data/processed_p
 
     print("Initial shape:", df.shape)
     
-    #Keep real players
+    #Keep pass and runs only
 
     df = df[df["play_type"].notna()]
-    df =df[df["play_type"].isin(["pass","run"])]
+    df = df[df["play_type"].isin(["pass","run"])]
 
     #Select columns
 
@@ -46,6 +46,12 @@ def preprocess_data(input_path="data/raw_pbp.csv", output_path="data/processed_p
     #Late game indicator (last 5 minutes)
     df["late_game"] = (df["game_seconds_remaining"] <=300).astype(int)
 
+    #Losing by more than TD (trailing team may pass more)
+    df["losing_big"] = (df["score_differential"] < -7). astype(int)
+    
+    #Short yardage situation 
+    df["short_yardage"] = (df["ydstogo"] <= 2).astype(int)
+    
     #Play success target
     df["success"] = (df["yards_gained"] > 0).astype(int)
 

@@ -1,82 +1,142 @@
-NFL Game Outcome Prediction
-Overview
+# NFL Play Success Predictor
 
-This project predicts NFL game outcomes (home team win or loss) using team-level statistics, home-field advantage, and engineered features. The goal is to evaluate how well machine learning models can predict game results using historical data.
+A machine learning project that predicts whether an NFL play will gain positive yards using historical play-by-play data from 2020–2023.
 
-Dataset
+---
 
-Data was obtained using the nflverse Python package, which provides comprehensive play-by-play and game-level NFL data.
+## Overview
 
-Seasons used: 2020–2023
+This project uses the `nfl_data_py` package to pull NFL play-by-play data and trains a **Random Forest Classifier** to predict play success based on down, distance, field position, score differential, and more.
 
-Project Structure
-nfl-game-prediction/
-│
-├── data/                # Processed datasets
-├── notebooks/           # Exploratory data analysis
-├── src/                 # Source code for data processing and modeling
-├── models/              # Saved trained models
+---
+
+## Project Structure
+
+```
+MilesStone1Project/
+├── data/
+│   ├── raw_pbp.csv            # Raw play-by-play data (not tracked by Git)
+│   └── processed_pbp.csv      # Cleaned and engineered features
+├── notebooks/
+│   └── 01_eda.ipynb           # EDA, visualizations, and model training
+├── src/
+│   ├── load_data.py           # Downloads raw NFL data via nfl_data_py
+│   └── preprocess.py          # Cleans data and engineers features
+├── models/
+│   └── train_model.py         # Trains and evaluates the Random Forest model
+├── model/
+│   └── nfl_model.pkl          # Saved trained model (not tracked by Git)
 ├── requirements.txt
 └── README.md
+```
 
-Features Engineered
+---
 
-Home win (target variable)
+## Setup
 
-Point differential
+### 1. Clone the repo
+```bash
+git clone https://github.com/Zimani-Z/MilesStone1Project.git
+cd MilesStone1Project
+```
 
-Additional engineered features to be added:
+### 2. Create and activate conda environment
+```bash
+conda create -n myenv python=3.11
+conda activate myenv
+```
 
-Turnover differential
+### 3. Install dependencies
+```bash
+conda install -y -c conda-forge numpy scipy scikit-learn joblib matplotlib seaborn jupyter ipykernel
+pip install nfl_data_py
+```
 
-Rolling averages
+### 4. Register Jupyter kernel
+```bash
+python -m ipykernel install --user --name myenv --display-name "Python (myenv)"
+```
 
-Weather indicators
+---
 
-Modeling Approach
+## How to Run
 
-Baseline Model:
+Run these commands in order from the project root:
 
-Logistic Regression
+```bash
+# Step 1 — Download raw NFL play-by-play data (2020–2023)
+python src/load_data.py
 
-Future Models:
+# Step 2 — Clean and engineer features
+python src/preprocess.py
 
-Random Forest
+# Step 3 — Train the model and print evaluation metrics
+python models/train_model.py
 
-Gradient Boosting
+# Step 4 — Launch Jupyter notebook for visualizations
+jupyter notebook
+```
 
-Evaluation Metrics
+Then open `notebooks/01_eda.ipynb` and select **Kernel → Python (myenv)**.
 
-Accuracy
+---
 
-Confusion Matrix
+## Features Used
 
-Precision / Recall (planned)
+| Feature | Description |
+|---|---|
+| `down` | 1st, 2nd, 3rd, or 4th down |
+| `ydstogo` | Yards needed for a first down |
+| `yardline_100` | Distance from end zone (1–100) |
+| `score_differential` | Score difference at time of play |
+| `epa` | Expected Points Added |
+| `is_pass` | 1 if pass play, 0 if run |
+| `red_zone` | 1 if inside opponent's 20-yard line |
+| `late_game` | 1 if under 5 minutes remaining |
+| `losing_big` | 1 if trailing by more than 7 points |
+| `short_yardage` | 1 if 2 or fewer yards to go |
 
-Results
+**Target:** `success` — 1 if the play gained positive yards, 0 if not.
 
-Baseline logistic regression achieved approximately XX% accuracy on the test set.
+---
 
-Future Improvements
+## Model
 
-Add advanced metrics (EPA)
+- **Algorithm:** Random Forest Classifier (100 trees)
+- **Train/Test Split:** 80/20
+- **Evaluation:** Accuracy, Precision, Recall, F1, Confusion Matrix
 
-Hyperparameter tuning
+---
 
-Cross-validation
+## Visualizations (in notebook)
 
-Model comparison
+- Play success rate by down
+- Success rate by yards to go
+- EPA distribution: pass vs run
+- Red zone pass vs run comparison
+- Confusion matrix heatmap
+- Feature importance chart
+- Custom play prediction cell
 
-Deploy as API
+---
 
-Technologies Used
+## Future Improvements
 
-Python
+- Filter and compare specific NFL teams
+- Add rolling averages per team
+- Hyperparameter tuning with GridSearchCV
+- Try Gradient Boosting / XGBoost
+- Cross-validation
+- Deploy model as a simple API
 
-Pandas
+---
 
-Scikit-learn
+## Data Source
 
-nflverse
+Play-by-play data from [nflverse](https://github.com/nflverse/nflverse-data) via the `nfl_data_py` Python package. Seasons: 2020–2023.
 
-Matplotlib / Seaborn
+---
+
+## Technologies
+
+Python · Pandas · Scikit-learn · NumPy · Matplotlib · Seaborn · nfl_data_py · Jupyter · conda
