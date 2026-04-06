@@ -1,0 +1,22 @@
+# Virtual environments
+venv/
+.venv/
+
+# Conda
+.conda/
+
+# Data files (too large for GitHub)
+data/raw_pbp.csv
+data/processed_pbp.csv
+
+# Model file
+model/nfl_model.pkl
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# Mac junk
+.DS_Store
